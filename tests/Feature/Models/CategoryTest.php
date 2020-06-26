@@ -26,6 +26,7 @@ class CategoryTest extends TestCase
 
     public function testCreate()
     {
+        $uuidPattern = '/[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i';
         $category = Category::create(
             [
                 'name' => 'test1'
@@ -36,6 +37,7 @@ class CategoryTest extends TestCase
         $this->assertEquals('test1', $category->name);
         $this->assertNull($category->description);
         $this->assertTrue((boolean) $category->is_active);
+        $this->assertRegExp($uuidPattern, $category->id);
 
         $category = Category::create(
             [
@@ -48,6 +50,7 @@ class CategoryTest extends TestCase
         $this->assertEquals('test1', $category->name);
         $this->assertNull($category->description);
         $this->assertTrue($category->is_active);
+        $this->assertRegExp($uuidPattern, $category->id);
 
         $category = Category::create(
             [
@@ -60,6 +63,7 @@ class CategoryTest extends TestCase
         $this->assertEquals('test1', $category->name);
         $this->assertEquals('test description', $category->description);
         $this->assertTrue($category->is_active);
+        $this->assertRegExp($uuidPattern, $category->id);
 
         $category = Category::create(
             [
@@ -73,6 +77,7 @@ class CategoryTest extends TestCase
         $this->assertEquals('test1', $category->name);
         $this->assertEquals('test description', $category->description);
         $this->assertFalse($category->is_active);
+        $this->assertRegExp($uuidPattern, $category->id);
     }
 
     public function testUpdate()
@@ -94,5 +99,20 @@ class CategoryTest extends TestCase
         foreach ($data as $key => $value) {
             $this->assertEquals($value, $category->{$key});
         }
+    }
+
+    public function testDelete()
+    {
+        /** @var Category $category */
+        $category = factory(Category::class, 1)->create(
+            [
+                'description' => 'description test',
+                'is_active' => false,
+            ]
+        )->first();
+        $data = $category->toArray();
+        $category->delete();
+
+        $this->assertSoftDeleted('categories', $data);
     }
 }
