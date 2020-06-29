@@ -128,6 +128,28 @@ class GenreControllerTest extends TestCase
         ;
     }
 
+    public function testDelete()
+    {
+        /** @var Genre $genre */
+        $genre = factory(Genre::class)->create();
+
+        $id = $genre->id;
+
+        $response = $this->json(
+            'DELETE',
+            route('api.genres.destroy', ['genre' => $id])
+        );
+
+        $response->assertStatus(204);
+
+        $response = $this->json(
+            'GET',
+            route('api.genres.show', ['genre' => $id])
+        );
+
+        $response->assertStatus(404);
+    }
+
     protected function assertInvalidationResponse(TestResponse $response)
     {
         $response
