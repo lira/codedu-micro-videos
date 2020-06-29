@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Models;
 
+use App\Models\Category;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,7 @@ class GenreTest extends TestCase
         $this->assertEquals('test1', $genre->name);
         $this->assertTrue((boolean) $genre->is_active);
         $this->assertRegExp($uuidPattern, $genre->id);
+        $this->assertEquals(36, mb_strlen($genre->id));
 
         $genre = Genre::create(
             [
@@ -49,17 +51,18 @@ class GenreTest extends TestCase
         $this->assertEquals('test1', $genre->name);
         $this->assertFalse($genre->is_active);
         $this->assertRegExp($uuidPattern, $genre->id);
+        $this->assertEquals(36, mb_strlen($genre->id));
     }
 
     public function testUpdate()
     {
         /** @var Genre $genre */
-        $genre = factory(Genre::class, 1)->create(
+        $genre = factory(Genre::class)->create(
             [
                 'name' => 'name test',
                 'is_active' => false,
             ]
-        )->first();
+        );
         $data = [
             'name' => 'test name test test',
             'is_active' => true,
@@ -82,7 +85,9 @@ class GenreTest extends TestCase
         )->first();
         $data = $genre->toArray();
         $genre->delete();
-
+        $this->assertNull(Genre::find($genre->id));
         $this->assertSoftDeleted('genres', $data);
+        $genre->restore();
+        $this->assertNotNull(Genre::find($genre->id));
     }
 }

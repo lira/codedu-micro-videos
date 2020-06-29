@@ -38,6 +38,7 @@ class CategoryTest extends TestCase
         $this->assertNull($category->description);
         $this->assertTrue((boolean) $category->is_active);
         $this->assertRegExp($uuidPattern, $category->id);
+        $this->assertEquals(36, mb_strlen($category->id));
 
         $category = Category::create(
             [
@@ -51,6 +52,7 @@ class CategoryTest extends TestCase
         $this->assertNull($category->description);
         $this->assertTrue($category->is_active);
         $this->assertRegExp($uuidPattern, $category->id);
+        $this->assertEquals(36, mb_strlen($category->id));
 
         $category = Category::create(
             [
@@ -64,6 +66,7 @@ class CategoryTest extends TestCase
         $this->assertEquals('test description', $category->description);
         $this->assertTrue($category->is_active);
         $this->assertRegExp($uuidPattern, $category->id);
+        $this->assertEquals(36, mb_strlen($category->id));
 
         $category = Category::create(
             [
@@ -78,17 +81,18 @@ class CategoryTest extends TestCase
         $this->assertEquals('test description', $category->description);
         $this->assertFalse($category->is_active);
         $this->assertRegExp($uuidPattern, $category->id);
+        $this->assertEquals(36, mb_strlen($category->id));
     }
 
     public function testUpdate()
     {
         /** @var Category $category */
-        $category = factory(Category::class, 1)->create(
+        $category = factory(Category::class)->create(
             [
                 'description' => 'description test',
                 'is_active' => false,
             ]
-        )->first();
+        );
         $data = [
             'name' => 'test name updated',
             'description' => 'test description updated',
@@ -112,7 +116,9 @@ class CategoryTest extends TestCase
         )->first();
         $data = $category->toArray();
         $category->delete();
-
+        $this->assertNull(Category::find($category->id));
         $this->assertSoftDeleted('categories', $data);
+        $category->restore();
+        $this->assertNotNull(Category::find($category->id));
     }
 }
