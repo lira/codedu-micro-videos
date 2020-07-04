@@ -148,6 +148,10 @@ class GenreControllerTest extends TestCase
         );
 
         $response->assertStatus(404);
+
+
+        $this->assertNull(Genre::find($id));
+        $this->assertNotNull(Genre::withTrashed()->find($id));
     }
 
     protected function assertInvalidationResponse(TestResponse $response)
