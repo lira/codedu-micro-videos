@@ -26,23 +26,21 @@ class GenreControllerTest extends TestCase
 
     public function testIndex()
     {
-        $genre = factory(Genre::class)->create();
         $response = $this->get(route('api.genres.index'));
 
         $response
             ->assertStatus(200)
-            ->assertJson([$genre->toArray()])
+            ->assertJson([$this->genre->toArray()])
         ;
     }
 
     public function testShow()
     {
-        $genre = factory(Genre::class)->create();
-        $response = $this->get(route('api.genres.show', ['genre' => $genre->id]));
+        $response = $this->get(route('api.genres.show', ['genre' => $this->genre->id]));
 
         $response
             ->assertStatus(200)
-            ->assertJson($genre->toArray())
+            ->assertJson($this->genre->toArray())
         ;
     }
 
