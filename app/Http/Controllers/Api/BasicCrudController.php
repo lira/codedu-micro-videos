@@ -12,10 +12,7 @@ abstract class BasicCrudController extends Controller
 
     protected abstract function rulesStore();
 
-    private $rules = [
-        'name' => 'required|max:255',
-        'is_active' => 'boolean',
-    ];
+    protected abstract function rulesUpdate();
 
     public function index()
     {
@@ -30,22 +27,24 @@ abstract class BasicCrudController extends Controller
         return $object;
     }
 
-    public function show(Category $category)
+    public function show($id)
     {
-        return $category;
+        return $this->findOrFail($id);
     }
 
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
-        $this->validate($request, $this->rules);
-        $category->update($request->all());
-        $category->refresh();
-        return $category;
+        $validatedData = $this->validate($request, $this->rulesUpdate());
+        $object = $this->findOrFail($id);
+        $object->update($validatedData);
+        $object->refresh();
+        return $object;
     }
 
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        $category->delete();
+        $object = $this->findOrFail($id);
+        $object->delete();
         return response()->noContent(); // 204 - no content
     }
 

@@ -23,5 +23,6 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
     ];
     Route::resource('categories', 'CategoryController', $optionsExcept);
     Route::resource('genres', 'GenreController', $optionsExcept);
+    Route::resource('cast-members', 'CastMemberController', $optionsExcept);
 });
 
