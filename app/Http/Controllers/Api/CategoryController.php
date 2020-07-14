@@ -11,6 +11,7 @@ class CategoryController extends Controller
     private $rules = [
         'name' => 'required|max:255',
         'is_active' => 'boolean',
+        'description' => 'nullable',
     ];
 
     public function index()
