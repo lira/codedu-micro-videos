@@ -28,8 +28,8 @@ services:
             - app
 
     db:
-        image: mysql:5.7
-        command: --innodb-use-native-aio=0
+      build: .docker/mysql
+      command: --innodb-use-native-aio=0
         container_name: micro-videos-db
         tty: true
         ports:
