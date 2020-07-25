@@ -4,13 +4,13 @@ RUN apk add --no-cache openssl bash mysql-client nodejs npm shadow
 RUN docker-php-ext-install pdo pdo_mysql
 
 WORKDIR /var/www
-RUN rm -rf /var/www/html
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN rm -rf /var/www/html && \
+    chown www-data: /var/www && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    usermod -u 1000 www-data
 
 COPY --chown=www-data:www-data . /var/www
 
-RUN usermod -u 1000 www-data
 USER www-data
 
 RUN composer install && \
