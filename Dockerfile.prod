@@ -10,14 +10,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY --chown=www-data:www-data . /var/www
 
+RUN usermod -u 1000 www-data
+USER www-data
+
 RUN composer install && \
     php artisan config:cache && \
     chmod -R 777 storage
 
 RUN ln -s public html
-
-RUN usermod -u 1000 www-data
-USER www-data
 
 EXPOSE 9000
 
