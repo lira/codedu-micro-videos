@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
-class VideoController extends BasicCrudController
+class VideoController extends RelationCrudController
 {
     private $rules;
 
@@ -21,34 +21,6 @@ class VideoController extends BasicCrudController
             'categories_id' => 'required|array|exists:categories,id',
             'genres_id' => 'required|array|exists:genres,id',
         ];
-    }
-
-    public function store(Request $request)
-    {
-        $validatedData = $this->validate($request, $this->rulesStore());
-        $self = $this;
-        /** @var Video $object */
-        $object = \DB::transaction(function () use ($request, $validatedData, $self) {
-            $object = $self->model()::create($validatedData);
-            $self->handleRelations($object, $request);
-            return $object;
-        });
-        $object->refresh();
-        return $object;
-    }
-
-    public function update(Request $request, $id)
-    {
-        $validatedData = $this->validate($request, $this->rulesUpdate());
-        $self = $this;
-        $object = $this->findOrFail($id);
-        $object = \DB::transaction(function () use ($request, $validatedData, $self, $object) {
-            $object->update($validatedData);
-            $self->handleRelations($object, $request);
-            return $object;
-        });
-        $object->refresh();
-        return $object;
     }
 
     protected function handleRelations($video, Request $request)

@@ -8,13 +8,10 @@ use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\Request;
-use Mockery\Exception;
 use Tests\Exception\TestException;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
-
-use function Couchbase\fastlzCompress;
 
 class VideoControllerTest extends TestCase
 {
