@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Models\Category;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestResponse;
@@ -47,7 +48,8 @@ class GenreControllerTest extends TestCase
     public function testInvalidationData()
     {
         $data = [
-            'name' => ''
+            'name' => '',
+            'categories_id' => '',
         ];
         $this->assertInvalidationInStoreAction($data, 'required');
         $this->assertInvalidationInUpdateAction($data, 'required');
@@ -67,8 +69,12 @@ class GenreControllerTest extends TestCase
 
     public function testStore()
     {
+        $category = factory(Category::class)->create();
         $data = ['name' => 'test'];
-        $response = $this->assertStore($data, $data + ['is_active' => true, 'deleted_at' => null]);
+        $response = $this->assertStore(
+            $data  + ['categories_id' => [$category->id]],
+            $data + ['is_active' => true, 'deleted_at' => null]
+        );
         $response->assertJsonStructure(
             [
                 'created_at', 'updated_at'
@@ -77,9 +83,12 @@ class GenreControllerTest extends TestCase
 
         $data = [
             'name' => 'test',
-            'is_active' => false
+            'is_active' => false,
         ];
-        $this->assertStore($data, $data + ['is_active' => false]);
+        $this->assertStore(
+            $data + ['categories_id' => [$category->id]],
+            $data + ['is_active' => false]
+        );
     }
 
     public function testUpdate()
@@ -89,12 +98,14 @@ class GenreControllerTest extends TestCase
                 'is_active' => false
             ]
         );
+        $category = factory(Category::class)->create();
         $data = [
             'name' => 'test',
             'is_active' => true,
         ];
         $response = $this->assertUpdate(
-            $data, $data + ['deleted_at' => null]
+            $data + ['categories_id' => [$category->id]],
+            $data + ['deleted_at' => null]
         );
         $response->assertJsonStructure(
             [
@@ -106,7 +117,7 @@ class GenreControllerTest extends TestCase
             'name' => 'test updated',
         ];
         $this->assertUpdate(
-            $data, $data
+            $data + ['categories_id' => [$category->id]], $data
         );
     }
 

@@ -28,20 +28,20 @@ services:
             - app
 
     db:
-        image: mysql:5.7
-        command: --innodb-use-native-aio=0
-        container_name: micro-videos-db
-        tty: true
-        ports:
-            - "33006:3306"
-        volumes:
-            - ./.docker/dbdata:/var/lib/mysql
-            - ./.docker/mysql:/docker-entrypoint-initdb.d
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_USER=root
-        networks:
-            - app-network
+      build: .docker/mysql
+      command: --innodb-use-native-aio=0
+      container_name: micro-videos-db
+      tty: true
+      ports:
+          - "33006:3306"
+      volumes:
+          - ./.docker/dbdata:/var/lib/mysql
+          - ./.docker/mysql:/docker-entrypoint-initdb.d
+      environment:
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_USER=root
+      networks:
+          - app-network
 
     redis:
         image: redis:alpine

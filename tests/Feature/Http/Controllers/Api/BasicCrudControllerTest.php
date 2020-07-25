@@ -148,7 +148,12 @@ class BasicCrudControllerTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
         /** @var CategoryStub $category */
         $category = CategoryStub::create(['name' => 'test_name', 'description' => 'test_description']);
-        $this->controller->destroy($category->id);
+        $response = $this->controller->destroy($category->id);
+
+        $this
+            ->createTestResponse($response)
+            ->assertStatus(204);
+        $this->assertCount(0, CategoryStub::all());
 
         $reflectionClass = new \ReflectionClass(BasicCrudController::class);
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');

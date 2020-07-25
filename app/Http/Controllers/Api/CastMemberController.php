@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 
 class CastMemberController extends BasicCrudController
 {
-    private $rules = [
-        'name' => 'required|string',
-        'type' => 'required|number|in:1,2',
-    ];
+    private $rules = [];
+
+    public function __construct()
+    {
+        $this->rules = [
+            'name' => 'required|string|max:255',
+            'type' => 'required|numeric|in:' . implode(',', [CastMember::TYPE_DIRECTOR, CastMember::TYPE_ACTOR]),
+        ];
+    }
 
     protected function model()
     {
@@ -26,5 +31,4 @@ class CastMemberController extends BasicCrudController
     {
         return $this->rules;
     }
-
 }

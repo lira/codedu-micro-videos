@@ -10,8 +10,8 @@ class CastMember extends Model
 {
     use SoftDeletes, Uuid;
 
-    const DIRECTOR = 1;
-    const ACTOR = 2;
+    const TYPE_DIRECTOR = 1;
+    const TYPE_ACTOR = 2;
 
     protected $fillable = ['name', 'type'];
     protected $dates = ['deleted_at'];
